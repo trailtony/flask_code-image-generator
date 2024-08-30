@@ -7,4 +7,12 @@
 {% endblock title %}
 
 {% block content %}
+<form>                      <!-- form with a text input field to accept user input -->
+    <textarea
+      class="code"
+      name="code"
+      placeholder="Paste your Python code here"
+    >{{ code }}</textarea>  <!-- Added {{ code }} variable without any spaces between the variable and the surrounding <textarea> tags. 
+                                If you added a space here, then there’d be a space on the page surrounding your code input -->
+</form>
 {% endblock content %}
