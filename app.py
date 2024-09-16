@@ -6,6 +6,11 @@ from flask import (
     session,
     url_for
 )
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import Python3Lexer
+from pygments.styles import get_all_styles
+
 from typing import Dict
 from utils.generate_app_secret_key import create_flask_secret_key
 
@@ -14,7 +19,9 @@ app.secret_key = create_flask_secret_key()
 #app.config["TESTING"] = True
 
 # PLACEHOLDER_CODE defined as a constant due to it's use throughout the project
-PLACEHOLDER_CODE = "print('Hello, World!')" 
+PLACEHOLDER_CODE = "print('Hello, World!')"
+# Starting Pygments style name
+DEFAULT_STYLE = "default"
 
 @app.route("/", methods=["GET"])
 def code() -> render_template:
@@ -42,4 +49,26 @@ def reset_session() -> redirect:
     session["code"] = PLACEHOLDER_CODE
     return redirect(url_for("code"))
 
+# View to set Pygments definitions and render a template that shows the highlighted code
+@app.route("/style", methods=["GET"])
+def style():
+    if session.get("style") is None:
+        session["style"] = DEFAULT_STYLE
+    formatter = HtmlFormatter(style = session["style"])
+    context: Dict = {
+        "message": "Select Your Style 🎨",
+        "all_styles": list(get_all_styles()),
+        "style_definitions": formatter.get_style_defs(),
+        "style_bg_color": formatter.style.background_color,
+        "highlighted_code": highlight(session["code"], Python3Lexer(), formatter)
+    }
+    return render_template("style_selection.html", **context)
 
+# View that receives the "style" value from the posted form of style_selection.html
+@app.route("/save_style", methods=["POST"])
+def save_style():
+    if request.form.get("style") is not None:
+        session["style"] = request.form.get("style")
+    if request.form.get("code") is not None:
+        session["code"] = request.form.get("code")
+    return redirect(url_for("style"))
