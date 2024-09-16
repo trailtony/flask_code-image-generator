@@ -6,6 +6,9 @@ from flask import (
     session,
     url_for
 )
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import Python3Lexer
 from typing import Dict
 from utils.generate_app_secret_key import create_flask_secret_key
 
@@ -42,4 +45,16 @@ def reset_session() -> redirect:
     session["code"] = PLACEHOLDER_CODE
     return redirect(url_for("code"))
 
-
+# View to set Pygments definitions and render a template that shows the highlighted code
+@app.route("/style", methods=["GET"])
+def style():
+    formatter = HtmlFormatter()
+    context = {
+        "message": "Select Your Style 🎨",
+        "style_definitions": formatter.get_style_defs(),
+        "style_bg_color": formatter.style.background_color,
+        "highlighted_code": highlight(
+            session["code"], Python3Lexer(), formatter
+        ),
+    }
+    return render_template("style_selection.html", **context)

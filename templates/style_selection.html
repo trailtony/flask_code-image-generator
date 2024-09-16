@@ -1,0 +1,22 @@
+<!-- templates/style_selection.html -->
+
+{% extends "base.html" %}
+
+{% block title %}
+  - Style Selection
+{% endblock title %}
+
+{% block content %}
+<style>
+  {{ style_definitions }}
+
+  .code {
+    background-color: {{ style_bg_color }};
+  }
+</style>
+<form>
+  <div class="code">
+    {{ highlighted_code | safe }}
+  </div>
+</form>
+{% endblock content %}
