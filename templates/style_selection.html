@@ -10,13 +10,23 @@
 <style>
   {{ style_definitions }}
 
-  .code {
+  .code{
     background-color: {{ style_bg_color }};
-  }
+   }
 </style>
 <form>
-  <div class="code">
-    {{ highlighted_code | safe }}
-  </div>
+    <div class="controls">
+        <select name="style">
+          {% for style_name in all_styles %}
+            <option value="{{ style_name }}">{{ style_name }}</option>
+          {% endfor %}
+        </select>
+        <button formmethod="post" formaction="{{ url_for('save_style') }}">
+          Change Style 💅
+        </button>
+    </div>
+    <div class="code">
+        {{ highlighted_code | safe }}
+    </div>
 </form>
 {% endblock content %}
