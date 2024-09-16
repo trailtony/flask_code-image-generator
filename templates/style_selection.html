@@ -28,5 +28,10 @@
     <div class="code">
         {{ highlighted_code | safe }}
     </div>
+    <div class="controls">
+        <button formmethod="get" formaction="{{ url_for('code') }}">
+          ⬅️ Back
+        </button>
+      </div>
 </form>
 {% endblock content %}
