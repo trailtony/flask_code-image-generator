@@ -11,7 +11,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import Python3Lexer
 from pygments.styles import get_all_styles
 
-from typing import Dict
+from typing import Dict, Text, Response
 from utils.generate_app_secret_key import create_flask_secret_key
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ PLACEHOLDER_CODE = "print('Hello, World!')"
 DEFAULT_STYLE = "default"
 
 @app.route("/", methods=["GET"])
-def code() -> render_template:
+def code() -> Text:
     if session.get("code") is None:
         session["code"] = PLACEHOLDER_CODE
     lines = session["code"].split("\n")
@@ -38,20 +38,20 @@ def code() -> render_template:
 
 # View to reset a user’s session
 @app.route("/save_code", methods=["POST"])
-def save_code() -> redirect:
+def save_code() -> Response:
     session["code"] = request.form.get("code")
     return redirect(url_for("code"))
 
 # View to save a user’s custom code in session
 @app.route("/reset_session", methods=["POST"])
-def reset_session() -> redirect:
+def reset_session() -> Response:
     session.clear()
     session["code"] = PLACEHOLDER_CODE
     return redirect(url_for("code"))
 
 # View to set Pygments definitions and render a template that shows the highlighted code
 @app.route("/style", methods=["GET"])
-def style():
+def style() -> Text:
     if session.get("style") is None:
         session["style"] = DEFAULT_STYLE
     formatter = HtmlFormatter(style = session["style"])
@@ -66,9 +66,17 @@ def style():
 
 # View that receives the "style" value from the posted form of style_selection.html
 @app.route("/save_style", methods=["POST"])
-def save_style():
+def save_style() -> Response:
     if request.form.get("style") is not None:
         session["style"] = request.form.get("style")
     if request.form.get("code") is not None:
         session["code"] = request.form.get("code")
     return redirect(url_for("style"))
+
+# View to load and populate image.html with a success message
+@app.route("/image", methods=["GET"])
+def image() -> Text:
+    context = {
+        "message": "Done! 🎉",
+    }
+    return render_template("image.html", **context)
