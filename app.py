@@ -18,6 +18,7 @@ app.secret_key = create_flask_secret_key()
 PLACEHOLDER_CODE = "print('Hello, World!')"
 # Starting Pygments style name
 DEFAULT_STYLE = "default"
+NO_CODE_FALLBACK = "# No Code Entered"
 
 
 @app.route("/", methods=["GET"])
@@ -37,7 +38,7 @@ def code() -> Text:
 # View to reset a user’s session
 @app.route("/save_code", methods=["POST"])
 def save_code():
-    session["code"] = request.form.get("code")
+    session["code"] = request.form.get("code") or NO_CODE_FALLBACK
     return redirect(url_for("code"))
 
 
@@ -54,7 +55,6 @@ def reset_session():
 def style() -> Text:
     if session.get("style") is None:
         session["style"] = DEFAULT_STYLE
-    # session["style"] = DEFAULT_STYLE
     formatter = HtmlFormatter(style=session["style"])
     context: Dict = {
         "message": "Select Your Style 🎨",
@@ -73,7 +73,7 @@ def save_style():
     if request.form.get("style") is not None:
         session["style"] = request.form.get("style")
     if request.form.get("code") is not None:
-        session["code"] = request.form.get("code")
+        session["code"] = request.form.get("code") or NO_CODE_FALLBACK
     return redirect(url_for("style"))
 
 
