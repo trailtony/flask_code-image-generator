@@ -18,7 +18,11 @@
     <div class="controls">
         <select name="style">
           {% for style_name in all_styles %}
-            <option value="{{ style_name }}">{{ style_name }}</option>
+            <option 
+                value="{{ style_name }}"
+                {% if style_name == style %}selected{% endif %}
+            >
+                {{ style_name }}</option>
           {% endfor %}
         </select>
         <button formmethod="post" formaction="{{ url_for('save_style') }}">

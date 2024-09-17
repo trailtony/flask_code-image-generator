@@ -54,10 +54,12 @@ def reset_session():
 def style() -> Text:
     if session.get("style") is None:
         session["style"] = DEFAULT_STYLE
+    # session["style"] = DEFAULT_STYLE
     formatter = HtmlFormatter(style=session["style"])
     context: Dict = {
         "message": "Select Your Style 🎨",
         "all_styles": list(get_all_styles()),
+        "style": session["style"],
         "style_definitions": formatter.get_style_defs(),
         "style_bg_color": formatter.style.background_color,
         "highlighted_code": highlight(session["code"], Python3Lexer(), formatter),
