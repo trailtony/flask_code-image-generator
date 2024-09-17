@@ -22,7 +22,7 @@
           {% endfor %}
         </select>
         <button formmethod="post" formaction="{{ url_for('save_style') }}">
-          Change Style 💅
+            Change Style 💅
         </button>
     </div>
     <div class="code">
@@ -30,8 +30,11 @@
     </div>
     <div class="controls">
         <button formmethod="get" formaction="{{ url_for('code') }}">
-          ⬅️ Back
+            ⬅️ Back
         </button>
-      </div>
+        <button formmethod="get" formaction="{{ url_for('image') }}">
+            Create Image 📸
+        </button>
+    </div>
 </form>
 {% endblock content %}
